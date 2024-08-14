@@ -21,7 +21,7 @@ app.config.update(
     MAIL_PASSWORD='&hZRM;$i]ha#',
     SERVER_NAME='ec2-13-233-17-191.ap-south-1.compute.amazonaws.com',
     APPLICATION_ROOT='/',
-    PREFERRED_URL_SCHEME='http'
+    PREFERRED_URL_SCHEME='https'
 )
 
 mail = Mail(app)
@@ -58,8 +58,9 @@ filename=''
 @app.route('/track_click')
 def track_click():
     email = request.args.get('email')
-    response = request.args.get('response')
-    if email in follow_up_data:
+    response = request.args.get('response')       
+    
+    if email in follow_up_data:  
         name = follow_up_data[email]['name']
         subject_yes = follow_up_data[email]['subject_yes']
         body_yes = follow_up_data[email]['body_yes']
@@ -68,51 +69,15 @@ def track_click():
         subject_unsubscribe = follow_up_data[email]['subject_unsubscribe']
         body_unsubscribe = follow_up_data[email]['body_unsubscribe']
         datetime_unsubscribe = follow_up_data[email]['datetime_unsubscribe']
-
-        # tracking_url_yes = follow_up_data[email]['tracking_url_yes']
-        # tracking_url_no = follow_up_data[email]['tracking_url_no']
-        tracking_url_subscribe = follow_up_data[email]['tracking_url_subscribe']
-        tracking_url_unsubscribe = follow_up_data[email]['tracking_url_unsubscribe']
-
-        tracking_url_not4 = follow_up_data[email]['tracking_url_not4']
-        subject_no4 = follow_up_data[email]['subject_no4']
-        body_no4 = follow_up_data[email]['body_no4']
-        no_datetime4 = follow_up_data[email]['no_datetime4']
-
-        tracking_url_not6 = follow_up_data[email]['tracking_url_not6']
-        subject_no6 = follow_up_data[email]['subject_no6']
-        body_no6 = follow_up_data[email]['body_no6']
-        no_datetime6 = follow_up_data[email]['no_datetime6']
-
-        tracking_url_not10 = follow_up_data[email]['tracking_url_not10']
-        subject_no10 = follow_up_data[email]['subject_no10']
-        body_no10 = follow_up_data[email]['body_no10']
-        no_datetime10 = follow_up_data[email]['no_datetime10']
-
-        tracking_url_not14 = follow_up_data[email]['tracking_url_not14']
-        subject_no14 = follow_up_data[email]['subject_no14']
-        body_no14 = follow_up_data[email]['body_no14']
-        no_datetime14 = follow_up_data[email]['no_datetime14']
-        initial_subject = follow_up_data[email]['initial_subject']
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-
+        
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')  
-
         with open(filename, 'a') as log_file:
-                   log_file.write(f"{email},{response},{datetime.now()}\n")
+                   log_file.write(f"{email},{response},{datetime.now()}\n")        
         if response:
             if response == 'yes':
-                # Schedule follow-up email for Yes response
-                schedule_one_time_task(sender_email,yes_datetime, email, name, subject_yes, body_yes, tracking_url_subscribe, tracking_url_unsubscribe)
-                return redirect(tracking_url_yes)
-            elif response == 'subscribe':
-                # Schedule follow-up email for Subscribe response
-                schedule_one_time_task_without_url(sender_email,datetime_subscribe, email, name, subject_subscribe, body_subscribe)
-                return redirect("https://arkaconsultancy.xyz/")
                 # Schedule follow-up email for Yes response    
                 schedule_one_time_task(sender_email,yes_datetime, email, name, subject_yes, body_yes)   
                 return redirect(tracking_url_yes)           
-
             elif response == 'unsubscribe':
                 # Schedule follow-up email for Unsubscribe response
                 schedule_one_time_task_without_url(sender_email,datetime_unsubscribe, email, name, subject_unsubscribe, body_unsubscribe)
@@ -123,15 +88,6 @@ def track_click():
                 return redirect(tracking_url_yes)
             elif response == 'Unsubscribe':
                 # Schedule follow-up email for Unsubscribe response
-                schedule_one_time_task_without_url(sender_email,email, name, subject_unsubscribe, body_unsubscribe)
-                return redirect("https://arkaconsultancy.xyz/")
-    else:
-        return "No follow-up data found for the provided email."
-
-def check_for_non_opens():
-    print("Scheduling email for non openers")
-    responses = extract_responses_from_log(filename)
-
                 schedule_follow_up_email_without_url(sender_email,email, name, subject_unsubscribe, body_unsubscribe)
                 return redirect("https://arkaconsultancy.xyz/")   
             elif response=='no':
@@ -163,24 +119,13 @@ def schedule_task_at_yes(datetime1,subject1,body1):
         threading.Timer(delay, check_for_yes_response,args=[datetime1,subject1,body1]).start()
 def check_for_non_opens(datetime1,subject1,body1):  
     responses = extract_responses_from_log(filename)    
->>>>>>> origin/master
     merged_df = pd.merge(new_data, responses[['Email']], on='Email', how='left', indicator=True)
     non_responders_df = merged_df[merged_df['_merge'] == 'left_only'][['Email', 'Name']]
+# Filter out rows where there is no response
+    # non_responders_df = merged_df[merged_df['_merge'] == 'left_only'].drop(columns=['_merge', 'Timestamp', 'Response'])
     print(non_responders_df) 
     for _, row in  non_responders_df.iterrows():
             recipient = row['Email']
-<<<<<<< HEAD
-            name = row['Name']
-            schedule_daily_task(sender_email,not_datetime,recipient, name, subject_not,body_not,tracking_url_yes, tracking_url_no)
-def schedule_task_at(not_datetime_str):
-    # Parse the provided time string
-    print("Checking non openers")
-    target_datetime = datetime.strptime(not_datetime_str, "%Y-%m-%dT%H:%M")
-    time_before = target_datetime - timedelta(minutes=2)
-
-    # Get the current time
-    now = datetime.now()
-=======
             name = row['Name']    
             schedule_daily_task6(sender_email,datetime1,recipient, name, subject1,body1,tracking_url_yes)
 def schedule_task_at(datetime1,subject1,body1):
@@ -189,48 +134,16 @@ def schedule_task_at(datetime1,subject1,body1):
     time_before = target_datetime - timedelta(minutes=2)   
     # Get the current time
     now = datetime.now()  
->>>>>>> origin/master
     # Calculate the delay in seconds
     delay = (time_before - now).total_seconds()
     # Schedule the check_for_non_opens function
     print(delay)
     if delay > 0:
-<<<<<<< HEAD
-        threading.Timer(delay, check_for_non_opens).start()
-
-def load_email_list_from_excel(excel_path):
-    """
-    Loads a list of email addresses from an Excel file.
-
-    Args:
-        excel_path (str): Path to the Excel file containing the email list.
-
-    Returns:
-        list: A list of email addresses.
-    """
-    # Read the Excel file using pandas
-    df = pd.read_excel(excel_path)
-
-    # Assuming the email addresses are in a column named 'Email'
-    email_list = df['Email'].tolist()
-
-    return email_list
-
-def convert_log_to_csv(log_file, csv_file):
-        with open(log_file, 'r') as infile, open(csv_file, 'w', newline='') as outfile:
-            reader = infile.readlines()
-            writer = csv.writer(outfile)
-            writer.writerow(["email", "response"])  # Writing the header row
-            for line in reader:
-                email, response = line.strip().split(',')
-                writer.writerow([email, response])
-=======
         threading.Timer(delay, check_for_non_opens,args=[datetime1,subject1,body1]).start() 
->>>>>>> origin/master
 def extract_responses_from_log(log_csv_path):
     # column_names = ['Email', 'Response', 'Timestamp']
     df_response= pd.read_csv(log_csv_path)
-
+    
     return df_response
 def parse_datetime(datetime_str):
     return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M")
@@ -264,7 +177,6 @@ def schedule_follow_up_email(sender_email,click_time,recipient, name, subject, b
 
     # Get the current time again (this step is redundant here since initial_time is already the current time)
     now = datetime.now()
-
 
     # Calculate the difference in seconds between now and the target time 2 days later
     time_diff = (target_datetime_plus_2_days - now).total_seconds()
@@ -393,7 +305,7 @@ def prepare_email_content4(subject, name, body, recipient, tracking_url_yes):
 </body>
 </html>
 
-
+    
     """
     return html_body
 
@@ -411,19 +323,14 @@ def prepare_email_content_1(subject, name, body, recipient):
 </head>
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
     <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-        <div style="text-align: left; padding-bottom: 20px;">
+        <div style="text-align: center; padding-bottom: 20px;">
             <h1 style="margin: 0; font-size: 24px; color: #333333;">Hello, {name}!</h1>
         </div>
         <div style="font-size: 16px; color: #555555; line-height: 1.6;">
             <p>{body}</p>
-<<<<<<< HEAD
-            <a href="{tracking_url_subscribe_redirect}" style="display: inline-block; padding: 10px 10px; font-size: 16px; color: #ffffff; background-color: #007bff; text-decoration: none; border-radius: 3px;">Subscribe</a>
-           <a href="{tracking_url_unsubscribe_redirect}" style="display: inline-block; padding: 10px 10px; font-size: 16px; color: #ffffff; background-color: #007bff; text-decoration: none; border-radius: 3px;">Unsubscribe</a>
-=======
            <a href="{tracking_url_unsubscribe_redirect}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #007bff; text-decoration: none; border-radius: 5px;">Unsubscribe</a>
->>>>>>> origin/master
         </div>
-        <div style="text-align: ;eft; padding-top: 20px; border-top: 1px solid #dddddd; font-size: 14px; color: #888888;">
+        <div style="text-align: center; padding-top: 20px; border-top: 1px solid #dddddd; font-size: 14px; color: #888888;">
             <p>Best regards,<br>Your Company</p>
         </div>
     </div>
@@ -445,13 +352,13 @@ def prepare_email_content_2(subject, name, body, recipient):
 </head>
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
     <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-        <div style="text-align:left; padding-bottom: 20px;">
+        <div style="text-align: center; padding-bottom: 20px;">
             <h1 style="margin: 0; font-size: 24px; color: #333333;">Hello, {name}!</h1>
         </div>
         <div style="font-size: 16px; color: #555555; line-height: 1.6;">
             <p>{body}</p>
         </div>
-        <div style="text-align:left; padding-top: 20px; border-top: 1px solid #dddddd; font-size: 14px; color: #888888;">
+        <div style="text-align: center; padding-top: 20px; border-top: 1px solid #dddddd; font-size: 14px; color: #888888;">
             <p>Best regards,<br>Your Company</p>
         </div>
     </div>
@@ -475,14 +382,14 @@ def prepare_email_content_3(subject, name, body, recipient):
 </head>
 <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4;">
     <div style="width: 100%; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-        <div style="text-align:left; padding-bottom: 20px;">
+        <div style="text-align: center; padding-bottom: 20px;">
             <h1 style="margin: 0; font-size: 24px; color: #333333;">Hello, {name}!</h1>
         </div>
         <div style="font-size: 16px; color: #555555; line-height: 1.6;">
             <p>{body}</p>
            <a href="{url2}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #007bff; text-decoration: none; border-radius: 5px;">{r2}</a>
         </div>
-        <div style="text-align:left; padding-top: 20px; border-top: 1px solid #dddddd; font-size: 14px; color: #888888;">
+        <div style="text-align: center; padding-top: 20px; border-top: 1px solid #dddddd; font-size: 14px; color: #888888;">
             <p>Best regards,<br>Your Company</p>
         </div>
     </div>
@@ -561,13 +468,8 @@ def index():
             recipient = row['Email']
             name = row['Name']
             # html_body = prepare_email_content(initial_subject, name, initial_body, recipient, tracking_url_yes, tracking_url_no)
-<<<<<<< HEAD
-            schedule_daily_task(sender_email,initial_datetime_str, recipient, name, initial_subject, initial_body, tracking_url_yes, tracking_url_no)
-
-=======
             schedule_daily_task(sender_email,initial_datetime_str, recipient, name, initial_subject, initial_body, tracking_url_yes)
             
->>>>>>> origin/master
             follow_up_data[recipient] = {
                 'email_list':email_list,
                 'sender_email':sender_email,
@@ -618,17 +520,9 @@ def index():
         <input type="file" id="emails" name="emails" accept=".xlsx" required><br><br>
         <label for="tracking_url_yes">Tracking URL for Booking a Call:</label>
         <input type="text" id="tracking_url_yes" name="tracking_url_yes" required><br><br>
-<<<<<<< HEAD
-        <label for="tracking_url_no">Tracking URL for No Response:</label>
-        <input type="text" id="tracking_url_no" name="tracking_url_no" required><br><br>
-
-        <h2>Follow-Up Emails for "Yes" Responses</h2>
-        <label for="yes_1_subject">Follow-Up 1 Subject:</label>
-=======
                                                           
         <h2>Follow-Up Emails After Booking the call- Newsletter1</h2>
         <label for="yes_1_subject">Follow-Up Subject for Newsletter:</label>
->>>>>>> origin/master
         <input type="text" id="yes_1_subject" name="yes_1_subject" required><br><br>
         <label for="yes_1_body">Follow-Up 1 Body:</label>
         <textarea id="yes_1_body" name="yes_1_body" rows="10" cols="30" required></textarea><br><br>
@@ -707,8 +601,5 @@ def run_scheduler():
 if __name__ == '__main__':
     scheduler_thread = threading.Thread(target=run_scheduler)
     scheduler_thread.start()
-<<<<<<< HEAD
-=======
     
     app.run(host='127.0.0.1', port=5000, debug=True)
->>>>>>> origin/master
