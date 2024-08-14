@@ -68,7 +68,6 @@ def track_click():
         subject_unsubscribe = follow_up_data[email]['subject_unsubscribe']
         body_unsubscribe = follow_up_data[email]['body_unsubscribe']
         datetime_unsubscribe = follow_up_data[email]['datetime_unsubscribe']
-<<<<<<< HEAD
 
         # tracking_url_yes = follow_up_data[email]['tracking_url_yes']
         # tracking_url_no = follow_up_data[email]['tracking_url_no']
@@ -96,15 +95,13 @@ def track_click():
         no_datetime14 = follow_up_data[email]['no_datetime14']
         initial_subject = follow_up_data[email]['initial_subject']
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-=======
-        
+
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')  
->>>>>>> origin/master
+
         with open(filename, 'a') as log_file:
                    log_file.write(f"{email},{response},{datetime.now()}\n")
         if response:
             if response == 'yes':
-<<<<<<< HEAD
                 # Schedule follow-up email for Yes response
                 schedule_one_time_task(sender_email,yes_datetime, email, name, subject_yes, body_yes, tracking_url_subscribe, tracking_url_unsubscribe)
                 return redirect(tracking_url_yes)
@@ -112,11 +109,10 @@ def track_click():
                 # Schedule follow-up email for Subscribe response
                 schedule_one_time_task_without_url(sender_email,datetime_subscribe, email, name, subject_subscribe, body_subscribe)
                 return redirect("https://arkaconsultancy.xyz/")
-=======
                 # Schedule follow-up email for Yes response    
                 schedule_one_time_task(sender_email,yes_datetime, email, name, subject_yes, body_yes)   
                 return redirect(tracking_url_yes)           
->>>>>>> origin/master
+
             elif response == 'unsubscribe':
                 # Schedule follow-up email for Unsubscribe response
                 schedule_one_time_task_without_url(sender_email,datetime_unsubscribe, email, name, subject_unsubscribe, body_unsubscribe)
@@ -127,7 +123,6 @@ def track_click():
                 return redirect(tracking_url_yes)
             elif response == 'Unsubscribe':
                 # Schedule follow-up email for Unsubscribe response
-<<<<<<< HEAD
                 schedule_one_time_task_without_url(sender_email,email, name, subject_unsubscribe, body_unsubscribe)
                 return redirect("https://arkaconsultancy.xyz/")
     else:
@@ -136,7 +131,7 @@ def track_click():
 def check_for_non_opens():
     print("Scheduling email for non openers")
     responses = extract_responses_from_log(filename)
-=======
+
                 schedule_follow_up_email_without_url(sender_email,email, name, subject_unsubscribe, body_unsubscribe)
                 return redirect("https://arkaconsultancy.xyz/")   
             elif response=='no':
